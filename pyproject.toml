@@ -1,0 +1,30 @@
+[project]
+name = "careerpilot_ai___multi_agent_career_mentor"
+version = "0.1.0"
+description = "careerpilot_ai___multi_agent_career_mentor using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[file-processing,google-genai,litellm,tools]==1.15.0",
+    "fastapi>=0.139.0",
+    "python-dotenv>=1.2.2",
+    "uvicorn>=0.50.0",
+]
+
+[project.scripts]
+careerpilot_ai___multi_agent_career_mentor = "careerpilot_ai___multi_agent_career_mentor.main:run"
+run_crew = "careerpilot_ai___multi_agent_career_mentor.main:run"
+train = "careerpilot_ai___multi_agent_career_mentor.main:train"
+replay = "careerpilot_ai___multi_agent_career_mentor.main:replay"
+test = "careerpilot_ai___multi_agent_career_mentor.main:test"
+run_with_trigger = "careerpilot_ai___multi_agent_career_mentor.main:run_with_trigger"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
+
+[tool.uv]
+override-dependencies = ["litellm<=1.82.6"]

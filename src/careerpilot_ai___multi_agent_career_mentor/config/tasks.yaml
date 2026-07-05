@@ -1,0 +1,154 @@
+---
+resume_analysis:
+  description: |-
+    Analyze the following resume for the candidate applying for {target_role} at {company}.
+
+    Resume Content:
+    {resume_text}
+
+    Perform a thorough analysis and provide:
+    1. **ATS Score** (0–100) with justification
+    2. **Strengths** — what the resume does well
+    3. **Weaknesses** — areas that are weak or missing
+    4. **Missing Keywords** — critical keywords for {target_role} at {company} that are absent
+    5. **Top 5 Improvement Suggestions** — specific, actionable changes
+  expected_output: 'A structured markdown report with sections: ATS Score, Strengths,
+    Weaknesses, Missing Keywords, and Improvement Suggestions. Each section must be
+    detailed and specific to the candidate''s resume and the target role at {company}.'
+  agent: resume_analysis_expert
+job_match_evaluation:
+  description: |-
+    Using the resume provided below and the standard job requirements for {target_role} at {company}, evaluate the candidate's fit.
+
+    Resume Content:
+    {resume_text}
+
+    Target Role: {target_role}
+    Target Company: {company}
+
+    Provide:
+    1. **Match Score** — a percentage (0–100%) with breakdown by category (technical skills, experience, education, soft skills)
+    2. **Missing Skills** — a prioritized list of skills the candidate lacks for this role
+    3. **Interview Readiness** — an honest assessment (Not Ready / Partially Ready / Ready) with reasoning
+    4. **Top Improvements** — 3–5 specific actions the candidate can take to increase their match score
+  expected_output: 'A structured markdown report with: Match Score (with breakdown),
+    Missing Skills, Interview Readiness level with explanation, and Top Improvement
+    Actions. The score must be justified with clear reasoning.'
+  agent: job_match_evaluator
+  context:
+  - resume_analysis
+skill_gap_analysis:
+  description: |-
+    Based on the candidate's resume and the job match evaluation, perform a deep skill gap analysis for {target_role} at {company}.
+
+    Resume Content:
+    {resume_text}
+
+    Target Role: {target_role}
+    Target Company: {company}
+
+    Identify and provide:
+    1. **Technical Skill Gaps** — programming languages, frameworks, tools, and technologies missing
+    2. **Soft Skill Gaps** — communication, teamwork, leadership, problem-solving gaps
+    3. **Recommended Certifications** — top 3–5 certifications that will boost candidacy (with platform and duration)
+    4. **Recommended Projects** — 3–5 hands-on projects the candidate should build to demonstrate missing skills
+    5. **Priority Order** — rank all gaps from most critical to least critical for getting hired
+  expected_output: A detailed markdown report with sections for Technical Gaps, Soft
+    Skill Gaps, Recommended Certifications (with links/platforms), Recommended Projects
+    (with brief descriptions), and a Priority-Ranked Gap List.
+  agent: skill_gap_analyst
+  context:
+  - resume_analysis
+  - job_match_evaluation
+interview_questions_generation:
+  description: |-
+    Generate a comprehensive, personalized interview question bank for the candidate targeting {target_role} at {company}. Base the questions on the candidate's resume, their skill gaps, and {company}'s known interview format and culture.
+
+    Resume Content:
+    {resume_text}
+
+    Target Role: {target_role}
+    Target Company: {company}
+
+    Generate the following categories of questions:
+    1. **Technical Questions** (10 questions) — core CS concepts, algorithms, data structures relevant to {target_role}
+    2. **Coding Questions** (5 questions) — specific LeetCode-style problems commonly asked at {company}, with difficulty level
+    3. **System Design Questions** (3 questions) — architecture and design questions appropriate for {target_role}
+    4. **Behavioral Questions** (5 questions) — STAR-format questions based on the candidate's project experience
+    5. **HR Questions** (5 questions) — questions about motivation, culture fit, and career goals at {company}
+
+    For each question, include a brief hint or what the interviewer is looking for.
+  expected_output: A well-organized markdown document with 5 sections (Technical,
+    Coding, System Design, Behavioral, HR), each containing numbered questions with
+    hints. Total of 28 questions personalized to the candidate's background and {company}'s
+    interview style.
+  agent: interview_question_specialist
+  context:
+  - resume_analysis
+  - skill_gap_analysis
+resume_enhancement:
+  description: |-
+    Rewrite and improve the candidate's resume content based on the analysis and skill gap findings. The enhanced resume must be optimized for {target_role} at {company}.
+
+    Original Resume Content:
+    {resume_text}
+
+    Target Role: {target_role}
+    Target Company: {company}
+
+    Provide:
+    1. **Improved Professional Summary** — a powerful 3–4 sentence summary tailored to {target_role} at {company}
+    2. **Rewritten Bullet Points** — take the candidate's existing experience bullet points and rewrite each one using strong action verbs and quantifiable results (XYZ formula)
+    3. **Enhanced Project Descriptions** — rewrite project descriptions to highlight impact, tech stack, and relevance to {target_role}
+    4. **ATS Keywords to Add** — list of high-impact keywords to embed naturally in the resume
+    5. **Formatting Suggestions** — structural improvements for better ATS parsing and human readability
+  expected_output: 'A complete markdown document with: (1) Improved Professional Summary,
+    (2) All rewritten bullet points (original vs improved side by side), (3) Enhanced
+    project descriptions, (4) ATS keyword list, and (5) Formatting recommendations.
+    Ready to be directly copy-pasted into a resume.'
+  agent: resume_improvement_specialist
+  context:
+  - resume_analysis
+  - skill_gap_analysis
+learning_roadmap_creation:
+  description: |-
+    Create a detailed, personalized 30/60/90-day learning and preparation roadmap for the candidate to land {target_role} at {company}. Build this roadmap based on the identified skill gaps, job match evaluation, and the candidate's current profile.
+
+    Target Role: {target_role}
+    Target Company: {company}
+
+    Structure the roadmap as follows:
+
+    **Phase 1 — Days 1–30 (Foundation Building)**
+    - Week-by-week breakdown
+    - Daily study topics (2–3 hours/day assumption)
+    - Specific resources (courses, books, YouTube channels, docs)
+    - LeetCode/practice targets (number of problems, difficulty)
+    - Mini project to complete by end of phase
+
+    **Phase 2 — Days 31–60 (Skill Development)**
+    - Week-by-week breakdown
+    - Intermediate topics to cover
+    - Mock interview practice schedule
+    - Project building tasks
+    - Certification progress milestones
+
+    **Phase 3 — Days 61–90 (Interview Readiness)**
+    - Full mock interview schedule
+    - System design practice topics
+    - Resume and LinkedIn polish tasks
+    - Application strategy (number of applications per week)
+    - Final preparation checklist
+
+    Include links to free resources wherever possible.
+  expected_output: A comprehensive, actionable 30/60/90-day roadmap in markdown format
+    with three clearly defined phases, each containing week-by-week plans, daily focus
+    areas, specific resource links, and measurable milestones. The roadmap must be
+    realistic, motivating, and tailored to the candidate's current skill level and
+    target role at {company}.
+  agent: learning_roadmap_planner
+  context:
+  - skill_gap_analysis
+  - job_match_evaluation
+  - interview_questions_generation
+  - resume_enhancement
