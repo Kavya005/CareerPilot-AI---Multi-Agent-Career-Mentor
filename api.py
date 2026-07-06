@@ -1,9 +1,12 @@
 import os
 import sys
+from pathlib import Path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -60,7 +63,7 @@ def get_db():
         db.close()
 
 
-@app.get("/")
+@app.get("/api")
 def home():
     return {"message": "CareerPilot Backend Running", "database": "ready"}
 
@@ -68,6 +71,24 @@ def home():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+frontend_dist = Path(__file__).parent / "frontend" / "dist"
+if frontend_dist.exists():
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/", include_in_schema=False)
+    async def serve_frontend_root():
+        return FileResponse(frontend_dist / "index.html")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend_fallback(full_path: str):
+        candidate = frontend_dist / full_path
+        if candidate.exists() and candidate.is_file():
+            return FileResponse(candidate)
+        return FileResponse(frontend_dist / "index.html")
 
 
 @app.post("/ask")
