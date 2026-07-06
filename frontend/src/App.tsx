@@ -130,6 +130,8 @@ const FEATURES = [
   { icon: Mic, title: 'Voice Assistant', description: 'Voice interaction for a natural mentoring experience.', comingSoon: true },
 ];
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+
 const mockAnalysisResult: AnalysisResult = {
   resume_analysis: {
     strengths: [
@@ -406,7 +408,7 @@ export default function App() {
     try {
       const resumeText = await extractPdfText(uploadedFile);
 
-      const response = await fetch('http://127.0.0.1:8000/ask', {
+      const response = await fetch(`${API_BASE_URL}/ask`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

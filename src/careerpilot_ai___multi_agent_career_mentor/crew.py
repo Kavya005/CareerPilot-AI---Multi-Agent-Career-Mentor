@@ -5,10 +5,35 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 
 load_dotenv()
-gemini_llm = LLM(
-    model="gemini/gemini-2.5-flash",
-    api_key=os.getenv("GEMINI_API_KEY")
-)
+
+
+def is_real_api_key(value: str | None) -> bool:
+    if not value:
+        return False
+    cleaned = value.strip()
+    return bool(cleaned) and cleaned.lower() not in {"your_openai_api_key_here", "your_gemini_api_key_here", "changeme", "replace_me"}
+
+
+def get_llm() -> LLM:
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    if is_real_api_key(openai_api_key):
+        return LLM(
+            model="openai/gpt-4o-mini",
+            api_key=openai_api_key,
+        )
+
+    gemini_api_key = os.getenv("GEMINI_API_KEY")
+    if is_real_api_key(gemini_api_key):
+        return LLM(
+            model="gemini/gemini-2.5-flash",
+            api_key=gemini_api_key,
+        )
+
+    return LLM(model="openai/gpt-4o-mini")
+
+
+llm = get_llm()
+
 
 @CrewBase
 class CareerpilotAiMultiAgentCareerMentorCrew:
@@ -34,7 +59,7 @@ class CareerpilotAiMultiAgentCareerMentorCrew:
             
             
             max_execution_time=None,
-            llm=gemini_llm,
+            llm=llm,
             
         )
         
@@ -58,7 +83,7 @@ class CareerpilotAiMultiAgentCareerMentorCrew:
             
             
            max_execution_time=None,
-           llm=gemini_llm,
+           llm=llm,
         
             
         )
@@ -83,7 +108,7 @@ class CareerpilotAiMultiAgentCareerMentorCrew:
             
             
             max_execution_time=None,
-            llm=gemini_llm,
+            llm=llm,
 
             
         )
@@ -108,7 +133,7 @@ class CareerpilotAiMultiAgentCareerMentorCrew:
             
             
             max_execution_time=None,
-            llm=gemini_llm,
+            llm=llm,
 
             
         )
@@ -133,7 +158,7 @@ class CareerpilotAiMultiAgentCareerMentorCrew:
             
             
             max_execution_time=None,
-            llm=gemini_llm,
+            llm=llm,
 
             
         )
@@ -158,7 +183,7 @@ class CareerpilotAiMultiAgentCareerMentorCrew:
             
             
             max_execution_time=None,
-            llm=gemini_llm,
+            llm=llm,
 
             
         )
@@ -231,7 +256,7 @@ class CareerpilotAiMultiAgentCareerMentorCrew:
             process=Process.sequential,
             verbose=True,
 
-            chat_llm=gemini_llm
+            chat_llm=llm
         )
 
 
