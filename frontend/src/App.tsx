@@ -130,7 +130,15 @@ const FEATURES = [
   { icon: Mic, title: 'Voice Assistant', description: 'Voice interaction for a natural mentoring experience.', comingSoon: true },
 ];
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
+const getApiUrl = (path: string) => {
+  if (API_BASE_URL) {
+    return `${API_BASE_URL}${path}`;
+  }
+  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+  return `${currentOrigin}${path}`;
+};
 
 const mockAnalysisResult: AnalysisResult = {
   resume_analysis: {
@@ -408,7 +416,7 @@ export default function App() {
     try {
       const resumeText = await extractPdfText(uploadedFile);
 
-      const response = await fetch(`${API_BASE_URL}/ask`, {
+      const response = await fetch(getApiUrl('/ask'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
