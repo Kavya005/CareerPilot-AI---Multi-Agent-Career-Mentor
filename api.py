@@ -24,9 +24,19 @@ def build_fallback_response(request: "CareerRequest") -> dict:
 
 app = FastAPI(title="CareerPilot API")
 
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173,http://0.0.0.0:5173",
+    ).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://0.0.0.0:5173"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.onrender\.com$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
