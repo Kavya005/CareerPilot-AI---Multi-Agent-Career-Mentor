@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: careerpilot-backend
+    env: python
+    plan: free
+    rootDir: .
+    buildCommand: "pip install uv && uv sync --frozen"
+    startCommand: "uv run uvicorn api:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite:///./careerpilot.db
+
+  - type: web
+    name: careerpilot-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://careerpilot-backend.onrender.com
